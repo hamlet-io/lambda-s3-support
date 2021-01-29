@@ -1,22 +1,11 @@
 service: s3-inventory-move
 
-plugins:
-  - serverless-python-requirements
-
 package:
   individually: true
-  include:
-    - '!./**'
-    - './**'
   exclude:
     - '**'
-    - 'node_modules'
-
-custom:
-  pythonRequirements:
-    dockerizePip: 'non-linux'
-    invalidateCaches: true
-    fileName: requirements.txt
+  include:
+    - 'src/lambda.py'
 
 provider:
   name: aws
@@ -26,7 +15,7 @@ provider:
 
 functions:
   s3event-trigger:
-    handler:  lambda.s3event_lambda_handler
+    handler: src/lambda.s3event_lambda_handler
     events:
       - s3:
           bucket: test-bucket
@@ -35,4 +24,4 @@ functions:
 
 
   s3batch-processor:
-    handler: lambda.s3batch_lambda_handler
+    handler: src/lambda.s3batch_lambda_handler
