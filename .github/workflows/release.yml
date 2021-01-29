@@ -28,6 +28,13 @@ jobs:
           tag_name: ${{ github.ref  }}
           release_name: Release ${{ github.ref }}
 
+      - name: Get tag name
+        id: get-tag-name
+        run: |
+          tag_ref="${{github.ref}}"
+          tag_name="$(echo "${tag_ref##*/}" )"
+          echo "::set-output name=tag_name::$tag_name"
+
       - name: Upload Assets - s3-inventory-move
         id: upload_assets_s3_inventory
         uses: AButler/upload-release-assets@v2.0
