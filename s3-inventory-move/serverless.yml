@@ -1,7 +1,7 @@
 service: s3-inventory-move
 
 package:
-  individually: true
+  individually: false
   exclude:
     - '**'
   include:
