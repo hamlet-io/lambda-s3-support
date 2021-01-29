@@ -1,0 +1,37 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Create Lambda Release
+
+jobs:
+  build:
+    name: Create Lambda Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build - s3-inventory-move
+        working-directory: s3-inventory-move/
+        run: |
+          npm ci
+          npx sls package
+
+      - name: Create Tag Release
+        id: create_tag_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref  }}
+          release_name: Release ${{ github.ref }}
+
+      - name: Upload Assets - s3-inventory-move
+        id: upload_assets_s3_inventory
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 's3-inventory-move/.serverless/*.zip'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: ${{steps.get-tag-name.outputs.tag_name}}
