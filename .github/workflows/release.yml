@@ -13,8 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build - s3-inventory-move
-        working-directory: s3-inventory-move/
+      - name: Build - s3-inventory-copy
+        working-directory: s3-inventory-copy/
         run: |
           npm ci
           npx sls package
@@ -35,10 +35,10 @@ jobs:
           tag_name="$(echo "${tag_ref##*/}" )"
           echo "::set-output name=tag_name::$tag_name"
 
-      - name: Upload Assets - s3-inventory-move
+      - name: Upload Assets - s3-inventory-copy
         id: upload_assets_s3_inventory
         uses: AButler/upload-release-assets@v2.0
         with:
-          files: 's3-inventory-move/.serverless/*.zip'
+          files: 's3-inventory-copy/.serverless/*.zip'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: ${{steps.get-tag-name.outputs.tag_name}}

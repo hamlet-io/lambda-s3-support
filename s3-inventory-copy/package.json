@@ -1,5 +1,5 @@
 {
-  "name": "s3-inventory-move",
+  "name": "s3-inventory-copy",
   "version": "1.0.0",
   "description": "SLS packaging",
   "main": "''",

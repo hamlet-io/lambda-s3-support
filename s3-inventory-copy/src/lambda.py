@@ -57,7 +57,7 @@ def s3event_lambda_handler(event, context):
 
 def s3batch_lambda_handler(event, context):
     '''
-    Appends suffix or prefix to files and also moves to another bucket if required
+    Appends suffix or prefix to files and also copies to another bucket if required
     '''
 
     s3Client = boto3.client('s3')

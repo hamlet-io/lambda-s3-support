@@ -1,4 +1,4 @@
-service: s3-inventory-move
+service: s3-inventory-copy
 
 package:
   individually: false
