@@ -9,7 +9,7 @@ def s3event_lambda_handler(event, context):
     On S3 Inventory creation events trigger a batch job to work through the inventory
     '''
 
-    s3ControlClient = boto3.client('S3Control')
+    s3ControlClient = boto3.client('s3control')
     s3Client = boto3.client('s3')
 
     lambda_arn = os.environ('S3_BATCH_JOB_LAMBDA_ARN')
@@ -19,7 +19,7 @@ def s3event_lambda_handler(event, context):
     for record in event['Records']:
         bucket = record['s3']['bucket']['name']
         bucket_arn = record['s3']['bucket']['arn']
-        key = unquote_plus(record['s3']['object']['key'])
+        key = urllib.parse.unquote_plus(record['s3']['object']['key'])
         event = record['eventName']
 
         # Only trigger a new batch operation when we have a new checksum
@@ -72,7 +72,7 @@ def s3batch_lambda_handler(event, context):
 
     # Parse Amazon S3 Key, Key Version, and Bucket ARN
     taskId = event['tasks'][0]['taskId']
-    s3Key = urllib.unquote(event['tasks'][0]['s3Key']).decode('utf8')
+    s3Key = urllib.parse.unquote_plus(event['tasks'][0]['s3Key']).decode('utf8')
     s3VersionId = event['tasks'][0]['s3VersionId']
     s3BucketArn = event['tasks'][0]['s3BucketArn']
     s3Bucket = s3BucketArn.split(':::')[-1]
