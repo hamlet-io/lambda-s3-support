@@ -42,7 +42,7 @@
             "Default" : "s3_inventory_copy/"
         },
         {
-            "Names" : "soucrceBucketLink",
+            "Names" : "sourceBucketLink",
             "Description" : "A link to the source s3 bucket which will trigger the copy",
             "Children" : linkChildrenConfiguration
         }
@@ -55,7 +55,7 @@
             "Names" : "s3InventoryProfileSuffix",
             "Description" : "The suffix ( added to the id ) for the deployment profile which configures the userpool client",
             "Type" : STRING_TYPE,
-            "Default" : "_cognitoqs"
+            "Default" : "_s3inventorycopy"
         },
         {
             "Names" : "lambdaImageUrl",
@@ -67,7 +67,7 @@
             "Names" : "lambdaImageHash",
             "Description" : "The sha1 hash of the lambda zip image",
             "Type" : STRING_TYPE,
-            "Default" : "4ecc2684e18be6ad91b704cf211b074919314144"
+            "Default" : "3a32ca21b1b5d4331718b508c67cd931784cb33c"
         },
         {
             "Names" : "batchPriorty",
@@ -83,8 +83,11 @@
         id
         tier
         instance
+        sourceBucketLink
+        destinationBucketLink
         s3KeyPrefix
         s3KeySuffix
+        s3InventoryPrefix
         s3InventoryProfileSuffix
         lambdaImageUrl
         lambdaImageHash
@@ -98,8 +101,9 @@
     [#local namespace = formatName(product["Name"], environment["Name"], segment["Name"])]
 
     [#local lambdaId = formatName(id, "lambda") ]
-    [#local lambdaSettingsNamespace = formatName(namespace, tier, lambdaId, instance)]
 
+    [#local s3EventSettingsNamespace = formatName(namespace, tier, id, instance, "s3event")]
+    [#local s3BatchSettingsNamespace = formatName(namespace, tier, id, instance, "s3batch")]
 
     [#-- Lambda Configuration --]
     [@loadModule
@@ -107,11 +111,23 @@
             {
                 "Type" : "Settings",
                 "Scope" : "Products",
-                "Namespace" : lambdaSettingsNamespace,
+                "Namespace" : s3EventSettingsNamespace,
+                "Settings" : {
+                    "S3_BATCH_PRIORITY" : batchPriorty
+                }
+            }
+        ]
+    /]
+
+    [@loadModule
+        settingSets=[
+            {
+                "Type" : "Settings",
+                "Scope" : "Products",
+                "Namespace" : s3BatchSettingsNamespace,
                 "Settings" : {
                     "S3_DESTINATION_PREFIX" : s3KeyPrefix,
-                    "S3_DESTINATION_SUFFIX" : s3KeySuffix,
-                    "S3_BATCH_PRIORITY" : batchPriorty
+                    "S3_DESTINATION_SUFFIX" : s3KeySuffix
                 }
             }
         ]
@@ -134,15 +150,15 @@
                                         "ImageHash" : lambdaImageHash
                                     }
                                 },
-                                "RunTime": "python3.6,
+                                "RunTime": "python3.8",
                                 "MemorySize": 128,
                                 "PredefineLogGroup": true,
                                 "VPCAccess": false,
-                                "Timeout": 10
+                                "Timeout": 10,
                                 "Functions": {
                                     "s3event": {
                                         "Handler": "src/lambda.s3event_lambda_handler",
-                                        "Extensions": [ "_noenv" ],
+                                        "Extensions": [ "_noenv", "_s3_inventory_copy_event" ],
                                         "Links" : {
                                             "S3_BATCH_JOB_LAMBDA" : {
                                                 "Tier" : tier,
@@ -153,7 +169,7 @@
                                                 "Role" : "invoke"
                                             },
                                             "S3_SOURCE" :
-                                                soucrceBucketLink +
+                                                sourceBucketLink +
                                                 {
                                                     "Role" : "consume"
                                                 }
@@ -161,14 +177,14 @@
                                     },
                                     "s3batch": {
                                         "Handler": "src/lambda.s3batch_lambda_handler",
-                                        "Extensions": [ "_noenv" ],
+                                        "Extensions": [ "_noenv", "_s3_inventory_copy_batch" ],
                                         "Links" : {
-                                            "S3_SOURCE" :
-                                                soucrceBucketLink +
+                                            "SOURCE_BUCKET" :
+                                                sourceBucketLink +
                                                 {
                                                     "Role" : "consume"
                                                 },
-                                            "s3_DESTINATION" :
+                                            "DESTINATION_BUCKET" :
                                                 destinationBucketLink +
                                                 {
                                                     "Role" : "produce"
