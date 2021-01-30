@@ -72,7 +72,7 @@ def s3batch_lambda_handler(event, context):
 
     # Parse Amazon S3 Key, Key Version, and Bucket ARN
     taskId = event['tasks'][0]['taskId']
-    s3Key = urllib.parse.unquote_plus(event['tasks'][0]['s3Key']).decode('utf8')
+    s3Key = urllib.parse.unquote_plus(event['tasks'][0]['s3Key'])
     s3VersionId = event['tasks'][0]['s3VersionId']
     s3BucketArn = event['tasks'][0]['s3BucketArn']
     s3Bucket = s3BucketArn.split(':::')[-1]
