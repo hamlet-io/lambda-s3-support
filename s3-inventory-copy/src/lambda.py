@@ -113,11 +113,11 @@ def s3batch_lambda_handler(event, context):
             resultString = 'Retry request to Amazon S3 due to timeout.'
         else:
             resultCode = 'PermanentFailure'
-            resultString = '{}: {}'.format(errorCode, errorMessage)
+            resultString = f'{errorCode}: {errorMessage}'
     except Exception as e:
         # Catch all exceptions to permanently fail the task
         resultCode = 'PermanentFailure'
-        resultString = 'Exception: {}'.format(e.message)
+        resultString = f'Exception: {e}'
     finally:
         results.append({
             'taskId': taskId,
@@ -146,4 +146,4 @@ def rename_key(s3Key):
     if os.environ.get('S3_DESTINATION_SUFFIX', None):
         s3_key = s3_key + os.environ.get('S3_DESTINATION_SUFFIX')
 
-    return s3Key + '_new_suffix'
+    return s3_key
