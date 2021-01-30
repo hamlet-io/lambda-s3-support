@@ -12,8 +12,8 @@ def s3event_lambda_handler(event, context):
     s3ControlClient = boto3.client('s3control')
     s3Client = boto3.client('s3')
 
-    lambda_arn = os.environ('S3_BATCH_JOB_LAMBDA_ARN')
-    batch_role_arn = os.environ('S3_BATCH_ROLE_ARN')
+    lambda_arn = os.environ.get('S3_BATCH_JOB_LAMBDA_ARN')
+    batch_role_arn = os.environ.get('S3_BATCH_ROLE_ARN')
     batch_priority = int(os.environ.get('S3_BATCH_PRIORITY', '100'))
 
     for record in event['Records']:
@@ -90,7 +90,7 @@ def s3batch_lambda_handler(event, context):
 
         # Construct New Key
         newKey = rename_key(s3Key)
-        newBucket = os.environ('DESTINAION_BUCKET_NAME')
+        newBucket = os.environ.get('DESTINAION_BUCKET_NAME')
 
         # Copy Object to New Bucket
         response = s3Client.copy_object(
@@ -141,9 +141,9 @@ def rename_key(s3Key):
     s3_key = s3Key
 
     if os.environ.get('S3_DESTINATION_PREFIX', None):
-        s3_key = os.environ('S3_DESTINATION_PREFIX') + s3_key
+        s3_key = os.environ.get('S3_DESTINATION_PREFIX') + s3_key
 
     if os.environ.get('S3_DESTINATION_SUFFIX', None):
-        s3_key = s3_key + os.environ('S3_DESTINATION_SUFFIX')
+        s3_key = s3_key + os.environ.get('S3_DESTINATION_SUFFIX')
 
     return s3Key + '_new_suffix'
