@@ -44,12 +44,12 @@
         {
             "Names" : "sourceBucketLink",
             "Description" : "A link to the source s3 bucket which will trigger the copy",
-            "Children" : linkChildrenConfiguration
+            "AttributeSet" : LINK_ATTRIBUTESET_TYPE
         }
         {
             "Names" : "destinationBucketLink",
             "Description" : "A link to an S3 bucket to copy the report objects to",
-            "Children" : linkChildrenConfiguration
+            "AttributeSet" : LINK_ATTRIBUTESET_TYPE
         }
         {
             "Names" : "s3InventoryProfileSuffix",
