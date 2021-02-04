@@ -16,19 +16,35 @@
 
 [#macro shared_extension_s3_inventory_copy_batch_deployment_setup occurrence ]
 
+    [#local s3PathConfig = ((_context.DefaultEnvironment["S3_PATH"])!"")?eval]
+
+    [#local s3DestinationPrefix = ""]
+    [#if s3PathConfig.Prefix.Enabled ]
+        [#local s3DestinationPrefix = getContextPath(occurrence, s3PathConfig.Prefix.Path) ]
+        [#if s3PathConfig.Prefix.Path.Style == "path" ]
+            [#local s3DestinationPrefix = s3DestinationPrefix?ensure_ends_with("/") ]
+        [/#if]
+    [/#if]
+
+    [#local s3DestinationSuffix = ""]
+    [#if s3PathConfig.Suffix.Enabled ]
+        [#local s3DestinationSuffix = getContextPath(occurrence, s3PathConfig.Suffix.Path) ]
+        [#if s3PathConfig.Suffix.Path.Style == "path" ]
+            [#local s3DestinationSuffix = s3DestinationSuffix?ensure_ends_with("/") ]
+        [/#if]
+    [/#if]
+
+
     [@Settings
         [
             "DESTINATION_BUCKET_NAME"
-        ] +
-        valueIfContent(
-            [ "S3_DESTINATION_PREFIX" ],
-            (_context.DefaultEnvironment["S3_DESTINATION_PREFIX"])!"",
-            []
-        ) +
-        valueIfContent(
-            [ "S3_DESTINATION_SUFFIX" ],
-            (_context.DefaultEnvironment["S3_DESTINATION_SUFFIX"])!"",
-            []
-        )
+        ]
+    /]
+
+    [@Settings
+        {
+            "S3_DESTINATION_PREFIX" : s3DestinationPrefix,
+            "S3_DESTINATION_SUFFIX" : s3DestinationSuffix
+        }
     /]
 [/#macro]

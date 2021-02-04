@@ -8,37 +8,55 @@
         {
             "Names" : "id",
             "Description" : "A unique id for this instance of the api",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Mandatory" : true
         },
         {
             "Names" : "tier",
             "Description" : "The tier the components will belong to",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Mandatory" : true
         },
         {
             "Names" : "instance",
             "Description" : "The instance id of the components",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Default" : "default"
         },
         {
             "Names" : "s3KeyPrefix",
-            "Description" : "A prefix to append to all keys in the report when copying",
-            "Type" : STRING_TYPE,
-            "Default" : ""
+            "Description" : "Creates a key prefix based on the deployment context",
+            "Children" : [
+                {
+                    "Names" : "Enabled",
+                    "Types" : BOOLEAN_TYPE,
+                    "Default" : true
+                },
+                {
+                    "Names" : "Path",
+                    "AttributeSet" : CONTEXTPATH_ATTRIBUTESET_TYPE
+                }
+            ]
         },
         {
             "Names" : "s3KeySuffix",
-            "Description" : "A suffix to append to all keys in the report when copying",
-            "Type" : STRING_TYPE,
-            "Default" : ""
+            "Description" : "Creates a key suffix based on the deployment context",
+            "Children" : [
+                {
+                    "Names" : "Enabled",
+                    "Types" : BOOLEAN_TYPE,
+                    "Default" : false
+                }
+                {
+                    "Names" : "Path",
+                    "AttributeSet" : CONTEXTPATH_ATTRIBUTESET_TYPE
+                }
+            ]
         },
         {
             "Names" : "s3InventoryPrefix",
             "Description" : "The prefix to use for inventory generation on the source bucket",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Default" : "s3_inventory_copy/"
         },
         {
@@ -54,25 +72,25 @@
         {
             "Names" : "s3InventoryProfileSuffix",
             "Description" : "The suffix ( added to the id ) for the deployment profile which configures the userpool client",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Default" : "_s3inventorycopy"
         },
         {
             "Names" : "lambdaImageUrl",
             "Description" : "The url to the lambda zip image",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.9/s3-inventory-copy.zip"
         },
         {
             "Names" : "lambdaImageHash",
             "Description" : "The sha1 hash of the lambda zip image",
-            "Type" : STRING_TYPE,
+            "Types" : STRING_TYPE,
             "Default" : "eec63deecde1ddc737d8e951eef8fe9b410a9ad4"
         },
         {
             "Names" : "batchPriorty",
             "Description" : "The priority of the s3 batch call - Highest wins",
-            "Type" : NUMBER_TYPE,
+            "Types" : NUMBER_TYPE,
             "Default" : 100
         }
     ]
@@ -126,8 +144,12 @@
                 "Scope" : "Products",
                 "Namespace" : s3BatchSettingsNamespace,
                 "Settings" : {
-                    "S3_DESTINATION_PREFIX" : s3KeyPrefix,
-                    "S3_DESTINATION_SUFFIX" : s3KeySuffix
+                    "s3_path": {
+                        "Value": {
+                            "Prefix" : s3KeyPrefix,
+                            "Suffix" : s3KeySuffix
+                        }
+                    }
                 }
             }
         ]
