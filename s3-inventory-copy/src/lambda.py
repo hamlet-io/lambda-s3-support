@@ -25,7 +25,7 @@ def s3event_lambda_handler(event, context):
         # Only trigger a new batch operation when we have a new checksum
         if key.endswith('manifest.checksum') and event == 'ObjectCreated:Put':
 
-            manifest_key = os.path.splitext(key) + '.json'
+            manifest_key = os.path.splitext(key)[0] + '.json'
             manifest_arn = bucket_arn + os.path.abspath(manifest_key)
             manifest_details = s3Client.head_object(
                 Bucket=bucket,
