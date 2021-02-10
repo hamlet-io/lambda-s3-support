@@ -79,13 +79,13 @@
             "Names" : "lambdaImageUrl",
             "Description" : "The url to the lambda zip image",
             "Types" : STRING_TYPE,
-            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.9/s3-inventory-copy.zip"
+            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.11/s3-inventory-copy.zip"
         },
         {
             "Names" : "lambdaImageHash",
             "Description" : "The sha1 hash of the lambda zip image",
             "Types" : STRING_TYPE,
-            "Default" : "eec63deecde1ddc737d8e951eef8fe9b410a9ad4"
+            "Default" : "124e5ab3f4c0e5f91790c3afd912cc222b403807"
         },
         {
             "Names" : "batchPriorty",
