@@ -243,10 +243,10 @@
                                 "Notifications" : {
                                     "InventoryCreate" : {
                                         "Links" : {
-                                            "s3move" : {
+                                            "s3move_" + instance : {
                                                 "Tier" : tier,
                                                 "Component" : lambdaId,
-                                                "Instance" : "",
+                                                "Instance" : instance,
                                                 "Version" : "",
                                                 "Role" : "invoke",
                                                 "Function" : "s3event"
