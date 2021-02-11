@@ -24,6 +24,13 @@
         deploymentFramework=CLOUD_FORMATION_DEPLOYMENT_FRAMEWORK
     /]
 
+    [#local links = getLinkTargets(occurrence, {}, false) ]
+    [#local s3BatchLambdaId = links["S3_BATCH_JOB_LAMBDA"].State.Resources["function"].Id ]
+
+    [@ContextSetting
+        name="S3_BATCH_JOB_LAMBDA_ARN"
+        value=getReference(s3BatchLambdaId, ARN_ATTRIBUTE_TYPE)
+    /]
 
     [#local s3BatchRoleId = formatResourceId(AWS_IAM_ROLE_RESOURCE_TYPE, occurrence.Core.Id, "s3", "batchoperations") ]
     [#local s3BatchPolicies = getLinkTargetsOutboundRoles(_context.Links) ]
@@ -63,7 +70,6 @@
 
     [@Settings
         [
-            "S3_BATCH_JOB_LAMBDA_ARN",
             "S3_BATCH_PRIORITY"
         ]
     /]

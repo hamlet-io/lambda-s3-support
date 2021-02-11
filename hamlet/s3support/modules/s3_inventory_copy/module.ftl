@@ -173,6 +173,9 @@
                             "Title": "",
                             "lambda": {
                                 "deployment:Unit" : lambdaId,
+                                "Instances" : {
+                                    instance : {}
+                                },
                                 "Image" : {
                                     "Source" : "url",
                                     "UrlSource" : {
