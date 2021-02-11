@@ -37,7 +37,8 @@
 
     [@Settings
         [
-            "DESTINATION_BUCKET_NAME"
+            "DESTINATION_BUCKET_NAME",
+            "MOVE_OBJECTS"
         ]
     /]
 

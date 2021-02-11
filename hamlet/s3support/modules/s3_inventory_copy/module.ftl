@@ -24,6 +24,12 @@
             "Default" : "default"
         },
         {
+            "Names" : "moveObjects",
+            "Description" : "Once the file has been copied removed the original",
+            "Types" : BOOLEAN_TYPE,
+            "Default" : false
+        },
+        {
             "Names" : "s3KeyPrefix",
             "Description" : "Creates a key prefix based on the deployment context",
             "Children" : [
@@ -103,6 +109,7 @@
         instance
         sourceBucketLink
         destinationBucketLink
+        moveObjects
         s3KeyPrefix
         s3KeySuffix
         s3InventoryPrefix
@@ -149,7 +156,8 @@
                             "Prefix" : s3KeyPrefix,
                             "Suffix" : s3KeySuffix
                         }
-                    }
+                    },
+                    "MOVE_OBJECTS" : moveObjects
                 }
             }
         ]
@@ -181,6 +189,11 @@
                                     "s3event": {
                                         "Handler": "src/lambda.s3event_lambda_handler",
                                         "Extensions": [ "_noenv", "_s3_inventory_copy_event" ],
+                                        "Environment" : {
+                                            "Json" : {
+                                                "Escaped" : false
+                                            }
+                                        },
                                         "Links" : {
                                             "S3_BATCH_JOB_LAMBDA" : {
                                                 "Tier" : tier,

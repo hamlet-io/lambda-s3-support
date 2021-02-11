@@ -24,6 +24,7 @@
         deploymentFramework=CLOUD_FORMATION_DEPLOYMENT_FRAMEWORK
     /]
 
+
     [#local s3BatchRoleId = formatResourceId(AWS_IAM_ROLE_RESOURCE_TYPE, occurrence.Core.Id, "s3", "batchoperations") ]
     [#local s3BatchPolicies = getLinkTargetsOutboundRoles(_context.Links) ]
 
@@ -48,6 +49,14 @@
         iamPassRolePermission(
             [
                 getReference(s3BatchRoleId, ARN_ATTRIBUTE_TYPE)
+            ]
+        )
+    /]
+
+    [@Policy
+        getPolicyStatement(
+            [
+                "s3:CreateJob"
             ]
         )
     /]
