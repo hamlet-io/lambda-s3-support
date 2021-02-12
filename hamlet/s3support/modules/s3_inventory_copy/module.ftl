@@ -236,7 +236,7 @@
                 }
             },
             "DeploymentProfiles" : {
-                id + s3InventoryProfileSuffix : {
+                concatenate([id, instance,s3InventoryProfileSuffix], "_") : {
                     "Modes" : {
                         "*" : {
                             "s3" : {
