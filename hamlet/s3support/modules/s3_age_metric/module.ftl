@@ -117,7 +117,7 @@
                                 "VPCAccess": false,
                                 "Timeout": 120,
                                 "Functions": {
-                                    "s3event": {
+                                    "s3agecheck": {
                                         "Handler": "src/lambda_function.lambda_handler",
                                         "Extensions": [ "_noenv", "_s3_age_metric" ],
                                         "Links" : {
