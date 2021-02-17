@@ -130,6 +130,8 @@
     [#local s3EventSettingsNamespace = formatName(namespace, tier, id, instance, "s3event")]
     [#local s3BatchSettingsNamespace = formatName(namespace, tier, id, instance, "s3batch")]
 
+    [#local s3SourceDeploymentProfile = concatenate([id, instance, s3InventoryProfileSuffix], "_")]
+
     [#-- Lambda Configuration --]
     [@loadModule
         settingSets=[
@@ -236,7 +238,7 @@
                 }
             },
             "DeploymentProfiles" : {
-                concatenate([id, instance,s3InventoryProfileSuffix], "_") : {
+                s3SourceDeploymentProfile : {
                     "Modes" : {
                         "*" : {
                             "s3" : {

@@ -1,0 +1,25 @@
+service: s3-age-metric
+
+plugins:
+  - serverless-python-requirements
+
+package:
+  individually: false
+  exclude:
+    - '**'
+  include:
+    - 'src/lambda_function.py'
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: dev
+  region: ap-southeast-2
+
+functions:
+  s3event-trigger:
+    handler: src/lambda_function.lambda_handler
