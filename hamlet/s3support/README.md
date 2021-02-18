@@ -275,3 +275,55 @@ Each module contributes the following solution content. For more information see
         }
     }
 ```
+
+
+### s3_age_metric
+
+```json
+    {
+        "Tiers" : {
+            tier : {
+                "Components" : {
+                    lambdaId : {
+                        "lambda": {
+                            "deployment:Unit" : lambdaId,
+                            "Instances" : {
+                                instance : {}
+                            },
+                            "Image" : {
+                                "Source" : "url",
+                                "UrlSource" : {
+                                    "Url" : lambdaImageUrl,
+                                    "ImageHash" : lambdaImageHash
+                                }
+                            },
+                            "RunTime": "python3.8",
+                            "MemorySize": 128,
+                            "PredefineLogGroup": true,
+                            "VPCAccess": false,
+                            "Timeout": 120,
+                            "Functions": {
+                                "s3agecheck": {
+                                    "Handler": "src/lambda_function.lambda_handler",
+                                    "Extensions": [ "_noenv", "_s3_age_metric" ],
+                                    "Links" : {
+                                        "BUCKET" :
+                                            bucketLink +
+                                            {
+                                                "Role" : "consume"
+                                            }
+                                    },
+                                    "Schedules" : {
+                                        "hourly" : {
+                                            "Expression" : "rate(1 hour)"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+```
