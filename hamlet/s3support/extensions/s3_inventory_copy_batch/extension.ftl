@@ -34,6 +34,29 @@
         [/#if]
     [/#if]
 
+    [#local destinationBucketLink = _context.Links["DESTINATION_BUCKET"]]
+    [#local policyS3DestinationPrefix = s3DestinationPrefix?has_content?then(s3DestinationPrefix, "*" )?remove_ending("/") ]
+
+    [#if destinationBucketLink?has_content ]
+        [#local destinationBaselineLinks = getBaselineLinks(destinationBucketLink, ["Encryption" ] )]
+        [#local destinationBaselineComponentIds = getBaselineComponentIds(destinationBaselineLinks)]
+        [#local destinationKmsKeyId = destinationBaselineComponentIds["Encryption"]]
+
+        [#if (destinationBucketLink.Configuration.Solution.Encryption.Enabled)!false ]
+            [@Policy
+                s3EncryptionAllPermission(
+                    destinationKmsKeyId,
+                    destinationBucketLink.State.Attributes["NAME"],
+                    policyS3DestinationPrefix,
+                    destinationBucketLink.State.Attributes["REGION"]
+                )
+            /]
+        [/#if]
+
+        [@Policy
+            s3ProducePermission(destinationBucketLink.State.Attributes["NAME"],  policyS3DestinationPrefix)
+        /]
+    [/#if]
 
     [@Settings
         [
