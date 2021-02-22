@@ -38,63 +38,102 @@ Basic setup of the module:
 
 ```json
 {
-  "Modules" : {
-    "s3Copy" : {
-        "Provider" : "s3support",
-        "Name" : "s3_inventory_copy",
-        "Enabled" : true,
-        "Parameters" : {
-            "id" : {
-                "Key" : "id",
-                "Value" : "<required - string -A unique id for this instance of the api>"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "$id": "https://hamlet.io/schema/latest/blueprint/module-s3_inventory_copy-schema.json",
+  "definitions": {
+    "s3_inventory_copy": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "A unique id for this instance of the api"
             },
-            "tier" : {
-                "Key" : "tier",
-                "Value" : "<required - string - The tier the components will belong to>"
+            "tier": {
+              "type": "string",
+              "description": "The tier the components will belong to"
             },
-            "moveObjects" : {
-                "Key" : "moveObjects",
-                "Value" : "< boolean - Once the file has been copied removed the original"
+            "instance": {
+              "type": "string",
+              "description": "The instance id of the components",
+              "default": "default"
             },
-            "s3KeyPrefix" : {
-                "Key" : "s3KeyPrefix",
-                "Value" : {
-                    "Enabled" : "<boolean - enable s3 key prefix creation>",
-                    "Path" : "< instance of contextpath attribute set>"
+            "moveObjects": {
+              "type": "boolean",
+              "description": "Once the file has been copied removed the original",
+              "default": false
+            },
+            "s3KeyPrefix": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Creates a key prefix based on the deployment context",
+              "properties": {
+                "Enabled": {
+                  "type": "boolean",
+                  "default": true
+                },
+                "Path": {
+                  "$ref": "https://hamlet.io/schema/latest/blueprint/schema-attributeset-schema.json#/contextpath"
                 }
+              }
             },
-            "s3KeySuffix" : {
-                "Key" : "s3KeySuffix",
-                "Value" : {
-                    "Enabled" : "<boolean - enable s3 key suffix creation>",
-                    "Path" : "< instance of contextpath attribute set>"
+            "s3KeySuffix": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Creates a key suffix based on the deployment context",
+              "properties": {
+                "Enabled": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "Path": {
+                  "$ref": "https://hamlet.io/schema/latest/blueprint/schema-attributeset-schema.json#/contextpath"
                 }
+              }
             },
-            "sourceBucket" : {
-                "Key" : "sourceBucketLink",
-                "Value" : "<required - instance of link attribute set"
+            "s3InventoryPrefix": {
+              "type": "string",
+              "description": "The prefix to use for inventory generation on the source bucket",
+              "default": "s3_inventory_copy/"
             },
-            "destinationBucket" : {
-                "Key" : "destinationBucketLink",
-                "Value" : "<optional - instance of link attribute set"
+            "sourceBucketLink": {
+              "$ref": "https://hamlet.io/schema/latest/blueprint/schema-attributeset-schema.json#/link",
+              "description": "A link to the source s3 bucket which will trigger the copy"
             },
-            "s3InventoryProfileSuffix" : {
-                "Key" : "s3InventoryProfileSuffix",
-                "Value" : "<optional - the prefix in the bucket where the inventory will be stored>"
+            "destinationBucketLink": {
+              "$ref": "https://hamlet.io/schema/latest/blueprint/schema-attributeset-schema.json#/link",
+              "description": "A link to an S3 bucket to copy the report objects to"
             },
-            "lambdaImageUrl" : {
-                "Key" : "lambdaImageUrl",
-                "Value" : "<optional - The url to the lambda zip image>"
+            "s3InventoryProfileSuffix": {
+              "type": "string",
+              "description": "The suffix ( added to the id ) for the deployment profile which configures the userpool client",
+              "default": "_s3inventorycopy"
             },
-            "lambdaImageHash" : {
-                "Key" : "lambdaImageHash",
-                "Value" : "<optional - The sha1 hash of the lambda zip image"
+            "lambdaImageUrl": {
+              "type": "string",
+              "description": "The url to the lambda zip image",
+              "default": "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.12/s3-inventory-copy.zip"
             },
-            "batchPriorty" : {
-                "Key" : "batchPriorty",
-                "Value" : "<optional - The priority of the s3 batch call - Highest wins"
+            "lambdaImageHash": {
+              "type": "string",
+              "description": "The sha1 hash of the lambda zip image",
+              "default": "53c574a946e9146033c9f080ce2c4cbacc205d51"
+            },
+            "batchPriorty": {
+              "type": "number",
+              "description": "The priority of the s3 batch call - Highest wins",
+              "default": 100
             }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "tier"
+          ]
         }
+      }
     }
   }
 }
@@ -116,45 +155,59 @@ Basic module configuration
 
 ```json
 {
-  "Modules" : {
-    "s3age" : {
-        "Provider" : "s3support",
-        "Name" : "s3_age_metric",
-        "Enabled" : true,
-        "Parameters" : {
-            "id" : {
-                "Key" : "id",
-                "Value" : "<required - string -A unique id for this instance of the api>"
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "$id": "https://hamlet.io/schema/latest/blueprint/module-s3_age_metric-schema.json",
+  "definitions": {
+    "s3_age_metric": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-Za-z_][A-Za-z0-9_]*$": {
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "A unique id for this instance of the api"
             },
-            "tier" : {
-                "Key" : "tier",
-                "Value" : "<required - string - The tier the components will belong to>"
+            "tier": {
+              "type": "string",
+              "description": "The tier the components will belong to"
             },
-            "instance" : {
-                "Key" : "instance",
-                "Value" : "<optional - string - The instance id of the components that will be deployed>"
+            "instance": {
+              "type": "string",
+              "description": "The instance id of the components",
+              "default": "default"
             },
-            "bucketLink" : {
-                "Key" : "bucketLink",
-                "Value" : "<required - instance of link attribute set - links to the bucket you want to monitor"
+            "bucketLink": {
+              "$ref": "https://hamlet.io/schema/latest/blueprint/schema-attributeset-schema.json#/link",
+              "description": "A link to the bucket you want to monitor"
             },
-            "bucketPrefix" : {
-                "Key" : "bucketLink",
-                "Value" : "<optional - instance of link attribute set - An optional prefix to include in monitoring"
+            "bucketPrefix": {
+              "type": "string",
+              "description": "An optional prefix to include in monitoring"
             },
-            "cloudwatchNamespace" : {
-                "Key" : "bucketLink",
-                "Value" : "<optional - the name of the cloudwatch namespace - default: S3ObjectAge"
+            "cloudwatchNamespace": {
+              "type": "string",
+              "description": "The Namespace to store the metrics under in CloudWatch",
+              "default": "S3ObjectAge"
             },
-            "lambdaImageUrl" : {
-                "Key" : "lambdaImageUrl",
-                "Value" : "<optional - The url to the lambda zip image>"
+            "lambdaImageUrl": {
+              "type": "string",
+              "description": "The url to the lambda zip image",
+              "default": "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.12/s3-age-metric.zip"
             },
-            "lambdaImageHash" : {
-                "Key" : "lambdaImageHash",
-                "Value" : "<optional - The sha1 hash of the lambda zip image"
+            "lambdaImageHash": {
+              "type": "string",
+              "description": "The sha1 hash of the lambda zip image",
+              "default": "53c574a946e9146033c9f080ce2c4cbacc205d51"
             }
+          },
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "tier"
+          ]
         }
+      }
     }
   }
 }
