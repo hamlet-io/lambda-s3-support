@@ -51,6 +51,11 @@
         value=getReference(s3BatchRoleId, ARN_ATTRIBUTE_TYPE)
     /]
 
+    [#-- All for S3 Lambda Access as part of single deployment --]
+    [@Policy
+        lambdaInvokePermission(s3BatchLambdaId)
+    /]
+
     [#-- Allow the S3 event function to pass the IAM role to s3 batch --]
     [@Policy
         iamPassRolePermission(

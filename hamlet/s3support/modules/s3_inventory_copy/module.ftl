@@ -127,8 +127,8 @@
 
     [#local lambdaId = formatName(id, "lambda") ]
 
-    [#local s3EventSettingsNamespace = formatName(namespace, tier, id, instance, "s3event")]
-    [#local s3BatchSettingsNamespace = formatName(namespace, tier, id, instance, "s3batch")]
+    [#local s3EventSettingsNamespace = formatName(namespace, tier, id, "s3event", instance)]
+    [#local s3BatchSettingsNamespace = formatName(namespace, tier, id, "s3batch", instance )]
 
     [#local s3SourceDeploymentProfile = concatenate([id, instance, s3InventoryProfileSuffix], "_")]
 
@@ -175,9 +175,6 @@
                             "Title": "",
                             "lambda": {
                                 "deployment:Unit" : lambdaId,
-                                "Instances" : {
-                                    instance : {}
-                                },
                                 "Image" : {
                                     "Source" : "url",
                                     "UrlSource" : {
@@ -192,44 +189,52 @@
                                 "Timeout": 10,
                                 "Functions": {
                                     "s3event": {
+                                        "Instances" : {
+                                            instance : {
+                                                "Links" : {
+                                                    "S3_BATCH_JOB_LAMBDA" : {
+                                                        "Tier" : tier,
+                                                        "Component" : lambdaId,
+                                                        "Instance" : instance,
+                                                        "Version" : "",
+                                                        "Function" : "s3batch",
+                                                        "Role" : "invoke"
+                                                    },
+                                                    "S3_SOURCE" :
+                                                        sourceBucketLink +
+                                                        {
+                                                            "Role" : "consume"
+                                                        }
+                                                }
+                                            }
+                                        },
                                         "Handler": "src/lambda.s3event_lambda_handler",
                                         "Extensions": [ "_noenv", "_s3_inventory_copy_event" ],
                                         "Environment" : {
                                             "Json" : {
                                                 "Escaped" : false
                                             }
-                                        },
-                                        "Links" : {
-                                            "S3_BATCH_JOB_LAMBDA" : {
-                                                "Tier" : tier,
-                                                "Component" : lambdaId,
-                                                "Instance" : instance,
-                                                "Version" : "",
-                                                "Function" : "s3batch",
-                                                "Role" : "invoke"
-                                            },
-                                            "S3_SOURCE" :
-                                                sourceBucketLink +
-                                                {
-                                                    "Role" : "consume"
-                                                }
                                         }
                                     },
                                     "s3batch": {
-                                        "Handler": "src/lambda.s3batch_lambda_handler",
-                                        "Extensions": [ "_noenv", "_s3_inventory_copy_batch" ],
-                                        "Links" : {
-                                            "SOURCE_BUCKET" :
-                                                sourceBucketLink +
-                                                {
-                                                    "Role" : "consume"
-                                                },
-                                            "DESTINATION_BUCKET" :
-                                                destinationBucketLink +
-                                                {
-                                                    "Role" : "produce"
+                                        "Instances" : {
+                                            instance : {
+                                                "Links" : {
+                                                    "SOURCE_BUCKET" :
+                                                        sourceBucketLink +
+                                                        {
+                                                            "Role" : "consume"
+                                                        },
+                                                    "DESTINATION_BUCKET" :
+                                                        destinationBucketLink +
+                                                        {
+                                                            "Role" : "produce"
+                                                        }
                                                 }
-                                        }
+                                            }
+                                        },
+                                        "Handler": "src/lambda.s3batch_lambda_handler",
+                                        "Extensions": [ "_noenv", "_s3_inventory_copy_batch" ]
                                     }
                                 }
                             }
