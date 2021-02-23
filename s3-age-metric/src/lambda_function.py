@@ -28,12 +28,16 @@ def lambda_handler(event, context):
     continuation_token = None
 
     while True:
+
+        s3_args = {
+            'Bucket': bucket_name,
+            'Prefix': bucket_prefix,
+        }
+        if continuation_token:
+            s3_args['ContinuationToken'] = continuation_token
+
         try:
-            s3_objects = s3_client.list_objects_v2(
-                Bucket=bucket_name,
-                Prefix=bucket_prefix,
-                ContinuationToken=continuation_token,
-            )
+            s3_objects = s3_client.list_objects_v2(**s3_args)
         except Exception as e:
             logger.fatal(str(e))
             raise e
