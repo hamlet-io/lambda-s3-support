@@ -42,12 +42,12 @@ def lambda_handler(event, context):
             logger.fatal(str(e))
             raise e
 
-        s3_contents = sorted(s3_objects["Contents"], key= lambda i: i['LastModified'] )
-
-        oldest_item_in_set = s3_contents[0]['LastModified']
-        if oldest_item_in_set < oldest_item:
-            oldest_item = oldest_item_in_set
-            oldest_item_key = s3_contents[0]['Key']
+        if 'Contents' in s3_objects:
+            s3_contents = sorted(s3_objects['Contents'], key= lambda i: i['LastModified'] )
+            oldest_item_in_set = s3_contents[0]['LastModified']
+            if oldest_item_in_set < oldest_item:
+                oldest_item = oldest_item_in_set
+                oldest_item_key = s3_contents[0]['Key']
 
         if s3_objects['IsTruncated']:
             continuation_token = s3_objects['NextContinuationToken']
