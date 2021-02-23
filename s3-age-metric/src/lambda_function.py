@@ -24,8 +24,8 @@ def lambda_handler(event, context):
 
     now_time = datetime.now(timezone.utc)
     oldest_item = now_time
-    oldest_item_key = ''
-    continuation_token = ''
+    oldest_item_key = None
+    continuation_token = None
 
     while True:
         try:
