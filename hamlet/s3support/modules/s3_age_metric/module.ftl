@@ -44,13 +44,13 @@
             "Names" : "lambdaImageUrl",
             "Description" : "The url to the lambda zip image",
             "Types" : STRING_TYPE,
-            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.13/s3-age-metric.zip"
+            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.15/s3-age-metric.zip"
         },
         {
             "Names" : "lambdaImageHash",
             "Description" : "The sha1 hash of the lambda zip image",
             "Types" : STRING_TYPE,
-            "Default" : "53c574a946e9146033c9f080ce2c4cbacc205d51"
+            "Default" : "455f6574e3602a37a5ca8b6a7163c57caa43c9d3"
         }
     ]
 /]

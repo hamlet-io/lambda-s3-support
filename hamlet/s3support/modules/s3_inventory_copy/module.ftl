@@ -85,7 +85,7 @@
             "Names" : "lambdaImageUrl",
             "Description" : "The url to the lambda zip image",
             "Types" : STRING_TYPE,
-            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.12/s3-inventory-copy.zip"
+            "Default" : "https://github.com/hamlet-io/lambda-s3-support/releases/download/v0.0.15/s3-inventory-copy.zip"
         },
         {
             "Names" : "lambdaImageHash",
