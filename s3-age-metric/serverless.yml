@@ -12,7 +12,7 @@ package:
 
 custom:
   pythonRequirements:
-    dockerizePip: non-linux
+    dockerizePip: always
 
 provider:
   name: aws
