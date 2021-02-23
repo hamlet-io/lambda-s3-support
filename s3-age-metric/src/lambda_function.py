@@ -23,7 +23,7 @@ def lambda_handler(event, context):
     cloudwatch_metric_namespace = os.environ.get('CLOUDWATCH_METRIC_NAMESPACE', 'S3ObjectAge' )
 
     now_time = datetime.now(timezone.utc)
-    oldest_item = now_time
+    oldest_item_age = now_time
     oldest_item_key = None
     continuation_token = None
 
@@ -44,9 +44,9 @@ def lambda_handler(event, context):
 
         if 'Contents' in s3_objects:
             s3_contents = sorted(s3_objects['Contents'], key= lambda i: i['LastModified'] )
-            oldest_item_in_set = s3_contents[0]['LastModified']
-            if oldest_item_in_set < oldest_item:
-                oldest_item = oldest_item_in_set
+            oldest_item_age_in_set = s3_contents[0]['LastModified']
+            if oldest_item_age_in_set < oldest_item_age:
+                oldest_item_age = oldest_item_age_in_set
                 oldest_item_key = s3_contents[0]['Key']
 
         if s3_objects['IsTruncated']:
@@ -54,8 +54,7 @@ def lambda_handler(event, context):
         else:
             break
 
-    oldest_item_age = (now_time - oldest_item).seconds
-
+    oldest_item_age = now_time - oldest_item_age
     try:
         cloudwatch_client.put_metric_data(
             Namespace=cloudwatch_metric_namespace,
@@ -69,7 +68,7 @@ def lambda_handler(event, context):
                         }
                     ],
                     'Timestamp' : now_time,
-                    'Value' : oldest_item_age,
+                    'Value' : oldest_item_age.total_seconds(),
                     'Unit' : 'Seconds',
                 }
             ]
@@ -78,10 +77,10 @@ def lambda_handler(event, context):
         logger.fatal(str(e))
         raise e
 
-    logger.info(f'Oldest Item: s3://{bucket_name}/{oldest_item_key} - Age: {oldest_item_age} seconds')
+    logger.info(f'Oldest Item: s3://{bucket_name}/{oldest_item_key} - Age: {oldest_item_age.days} days')
     return {
         'bucket_name': bucket_name,
         'bucket_prefix': bucket_prefix,
-        'oldest_item_age': oldest_item_age,
+        'oldest_item_age': oldest_item_age.total_seconds(),
         'oldest_item_key': oldest_item_key
     }
