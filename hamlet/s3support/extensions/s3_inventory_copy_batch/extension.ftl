@@ -16,7 +16,7 @@
 
 [#macro shared_extension_s3_inventory_copy_batch_deployment_setup occurrence ]
 
-    [#local s3PathConfig = ((_context.DefaultEnvironment["S3_PATH"])!"")?eval ]
+    [#local s3PathConfig = ((_context.DefaultEnvironment["S3_PATH"])!"")?eval_json ]
 
     [#local s3DestinationPrefix = ""]
     [#if (s3PathConfig.Prefix.Enabled)!false ]
