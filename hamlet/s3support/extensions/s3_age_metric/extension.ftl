@@ -24,6 +24,17 @@
         ]
     /]
 
+    [#-- Setting available for metric dimensions to lookup --]
+    [@Settings
+        {
+            "S3_PATH" : formatRelativePath(
+                            "s3://",
+                            (_context.DefaultEnvironment["BUCKET_NAME"])!"",
+                            (_context.DefaultEnvironment["BUCKET_PREFIX"])!""
+                        )?ensure_ends_with("/")
+        }
+    /]
+
     [#-- CloudWatch Metrics --]
     [#local cloudwatchNamespace = (_context.DefaultEnvironment["CLOUDWATCH_METRIC_NAMESPACE"])!"" ]
     [#if cloudwatchNamespace?has_content ]

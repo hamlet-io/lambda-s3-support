@@ -127,8 +127,8 @@
 
     [#local lambdaId = formatName(id, "lambda") ]
 
-    [#local s3EventSettingsNamespace = formatName(namespace, tier, id, "s3event", instance)]
-    [#local s3BatchSettingsNamespace = formatName(namespace, tier, id, "s3batch", instance )]
+    [#local s3EventSettingsNamespace = formatName(namespace, tier, getComponentName(lambdaId), "s3event", instance)]
+    [#local s3BatchSettingsNamespace = formatName(namespace, tier, getComponentName(lambdaId), "s3batch", instance )]
 
     [#local s3SourceDeploymentProfile = concatenate([id, instance, s3InventoryProfileSuffix], "_")]
 

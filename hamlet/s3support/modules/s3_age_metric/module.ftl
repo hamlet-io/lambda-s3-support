@@ -75,7 +75,7 @@
 
     [#local lambdaId = formatName(id, "lambda") ]
 
-    [#local lambdaSettingsNamespace = formatName(namespace, tier, id, instance)]
+    [#local lambdaSettingsNamespace = formatName(namespace, tier, getComponentName(lambdaId), instance)]
 
     [#-- Lambda Configuration --]
     [@loadModule
