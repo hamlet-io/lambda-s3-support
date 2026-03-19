@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
 
       - name: Create Tag Release
@@ -48,8 +48,8 @@ jobs:
         working-directory: s3-age-metric/
         run: |
           npm ci
-          npx sls package
-
+          npx osls package
+        
       - name: Upload Assets - s3-age-metric
         id: upload_assets_s3-age-metric
         uses: AButler/upload-release-assets@v2.0
