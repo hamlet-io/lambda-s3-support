@@ -182,7 +182,7 @@
                                         "ImageHash" : lambdaImageHash
                                     }
                                 },
-                                "RunTime": "python3.8",
+                                "RunTime": "python3.14",
                                 "MemorySize": 128,
                                 "PredefineLogGroup": true,
                                 "VPCAccess": false,

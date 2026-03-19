@@ -1,25 +1,16 @@
 service: s3-age-metric
 
-plugins:
-  - serverless-python-requirements
-
 package:
   individually: false
-  exclude:
-    - '**'
-  include:
+  patterns:
+    - '!**'
     - 'src/lambda_function.py'
-
-custom:
-  pythonRequirements:
-    dockerizePip: always
 
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.14
   stage: dev
   region: ap-southeast-2
-  lambdaHashingVersion: 20201221
 
 functions:
   s3event-trigger:
